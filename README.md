@@ -23,9 +23,51 @@ Steps
   Such as: https://blog.feabhas.com/2020/02/running-the-eclipse-mosquitto-mqtt-broker-in-a-docker-container/ and
   http://www.steves-internet-guide.com/mqtt-username-password-example/
 1. Compile Tasmota with Script supprt. Normal rules will not support color change.
-2. Flash Tasmota to Wemos D1 Mini
-3. Hook up WS2812s (Only need header on one side Wemos if lazy)
-4. Set Tamsmota Module to Generic, Set GPIO Pin for the WS2812
-5. Configure MQTT. For Ease of Use Set the Topic of Every Device AliceBob (or whatever your two names are). 
+2. Flash Tasmota to Wemos D1 Mini, give each a different hostname
+3. Configure MQTT. For Ease of Use Set the Topic of Every Device AliceBob (or whatever your two names are). 
   This should work for any number of lamps if you have lots of friends
+4. Hook up WS2812s (Only need header on one side Wemos if lazy)
+5. Set Tamsmota Module to Generic, Set GPIO Pin for the WS2812
+6. Add the script below into the script section and be sure to activate
+7. Check that the LEDs are synched.
+8. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wiress
+```
+
+Script Code
+```
+>D
+col=""
+ocol=""
+chan1=0
+chan2=0
+chan3=0
+powState=0
+
+>E
+; check for Color change (Color is a string)
+col=Color
+; color change needs 2 string vars
+if col!=ocol
+then ocol=col
+=>publish cmnd/AliceBob/color %ocol% 
+endif
+
+; or check change of color channels
+chan1=Channel[1]
+chan2=Channel[2]
+chan3=Channel[3]
+
+if chg[chan1]>0
+or chg[chan2]>0
+or chg[chan3]>0
+then
+=>publish cmnd/AliceBob/channel Channel 
+endif
+
+; check PowerState
+if powState!=pwr[1]
+then
+powState=pwr[1]
+=>publish cmnd/AliceBob/power1 %powState%
+endif 
 ```
