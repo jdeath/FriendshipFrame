@@ -2,7 +2,7 @@
 
 Work in Progress
 
-This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features, such as Alexa support. You need a MQTT server which is exposed to the internet. Since I wanted to use Tasmota and not compile custom code, I could not get to work with a free MQTT server (like https://www.maqiatto.com/). If anyone knows how or of a free service, please let me know. 
+This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features, such as Alexa support. You need a MQTT server which is exposed to the internet. Since I wanted to use Tasmota and not compile custom code, I could not get to work with a free cloud MQTT server (like https://www.maqiatto.com/). If anyone knows how to have tasmota use a free cloud server, please let me know. Amazon may be an option, but only free for 12 months.
 
 Parts:
 ```
@@ -17,7 +17,7 @@ Stay away from IR, because those need rules to use the remote.
 Software:
 ```
 Tasmota - You need to compile script support instead of rules. 
-  Will post a compiled bin here. Or use https://github.com/benzino77/tasmocompiler
+  Wemos bin posted. Or use https://github.com/benzino77/tasmocompiler to make your own.
 MQTT Server - Must be on an external network. 
   I used a https://mosquitto.org/ in a docker. TLS should probably be used, but haven't done that yet.
 ```
