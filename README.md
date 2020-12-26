@@ -32,6 +32,7 @@ Steps
 3. Configure MQTT. For Ease of Use Set the Topic of Every Device AliceBob (or whatever your two names are). 
   This should work for any number of lamps if you have lots of friends
 4. Hook up WS2812s (Only need header on one side Wemos if lazy)
+  https://tasmota.github.io/docs/WS2812B-and-WS2813/
 5. Set Tamsmota Module to Generic, Set GPIO Pin for the WS2812
 6. Add the script below into the script section and be sure to activate
 7. Check that the LEDs are synched.
