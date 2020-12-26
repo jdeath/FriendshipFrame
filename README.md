@@ -13,8 +13,10 @@ Touch Switch - Tin Foil and Resister (not done yet)
 
 Software:
 ```
-Tasmota - You need to compile script support instead of rules. Will post a compiled bin here. Or use https://github.com/benzino77/tasmocompiler
-MQTT Server - Must be on an external network. I used a https://mosquitto.org/ in a docker. TLS should be used, but haven't done that yet.
+Tasmota - You need to compile script support instead of rules. 
+  Will post a compiled bin here. Or use https://github.com/benzino77/tasmocompiler
+MQTT Server - Must be on an external network. 
+  I used a https://mosquitto.org/ in a docker. TLS should probably be used, but haven't done that yet.
 ```
 
 Steps
@@ -30,7 +32,7 @@ Steps
 5. Set Tamsmota Module to Generic, Set GPIO Pin for the WS2812
 6. Add the script below into the script section and be sure to activate
 7. Check that the LEDs are synched.
-8. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wiress
+8. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wireless
 ```
 
 Script Code
