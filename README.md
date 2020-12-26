@@ -2,13 +2,16 @@
 
 Work in Progress
 
-This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features, such as Alexa support. You need a MQTT server which is exposed to the internet. Since I wanted to use Tasmota and not compile custom code, I could not get to work with a free MQTT server (like https://www.maqiatto.com/). If anyone knows how or of a free service, please let me know.
+This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features, such as Alexa support. You need a MQTT server which is exposed to the internet. Since I wanted to use Tasmota and not compile custom code, I could not get to work with a free MQTT server (like https://www.maqiatto.com/). If anyone knows how or of a free service, please let me know. 
 
 Parts:
 ```
 Wemos D1 Mini (x2) - You can get for about $3 each on Aliexpress or Amazon. Real or knockoffs work. Can use almost any ESP board.
 WS2812 LEDs - A couple bucks each. I am using an 8 LED ring for each. 
 Touch Switch - Tin Foil and Resister (not done yet)
+
+For simpler build, probably could use RF MagicHome Devices (https://tasmota.github.io/docs/devices/MagicHome-with-ESP8285/)
+Stay away from IR, because those need rules to use the remote.
 ```
 
 Software:
