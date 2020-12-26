@@ -28,15 +28,15 @@ Steps
   Such as: https://blog.feabhas.com/2020/02/running-the-eclipse-mosquitto-mqtt-broker-in-a-docker-container/ and
   http://www.steves-internet-guide.com/mqtt-username-password-example/
 1. Compile Tasmota with Script supprt. Normal rules will not support color change.
-2. Flash Tasmota to Wemos D1 Mini, give each a different hostname
-3. Configure MQTT. For Ease of Use Set the Topic of Every Device AliceBob (or whatever your two names are). 
+2. Flash Tasmota to Wemos D1 Mini, give each a different hostname. Enable Alexa support
+3. Configure MQTT. For Ease of Use Set the Topic of Every Device to AliceBob (or whatever your two names are). 
   This should work for any number of lamps if you have lots of friends
-4. Hook up WS2812s (Only need header on one side Wemos if lazy)
+4. Hook up WS2812s (Only need header on 5V side of Wemos if you are lazy)
   https://tasmota.github.io/docs/WS2812B-and-WS2813/
 5. Set Tamsmota Module to Generic, Set GPIO Pin for the WS2812
 6. Add the script below into the script section and be sure to activate
-7. Check that the LEDs are synched.
-8. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wireless
+7. Check that the LEDs are synched in the web interface
+8. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wireless.
 ```
 
 Script Code
