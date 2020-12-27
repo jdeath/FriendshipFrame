@@ -33,24 +33,23 @@ MQTT Server - Must be on an external network.
   A. Get Arduinu IDE
   B. In Preferences->Additional Board Manager URLS-> Add: http://arduino.esp8266.com/stable/package_esp8266com_index.json
   C. Tools->Board->Board Manager->Esp8266 Version 2.5.2 (later did not work for me)
-  D. Tools->Board
+  D. Tools->Board->Esp8266 Version 2.5.2->Generic Esp8266
   D. Install the Libraries (version is imporant). Sketch->Include Library->Manage Libraries
     Adafruit NeoPixel 1.7.0 (later could work)
     ArduinoJson 5.13.5
     CapacativeSensor 0.5.1 (later could work)
     PubSubClient 2.8.0 (later could work)
     WifiManager 0.11.0
-  
-    
-2. Flash Tasmota to Wemos D1 Mini, give each a different hostname. Enable Alexa support
-3. Configure MQTT. For Ease of Use Set the Topic of Every Device to AliceBob (or whatever your two names are). 
-  This should work for any number of lamps if you have lots of friends
-4. Hook up WS2812s (Only need header on 5V side of Wemos if you are lazy)
-  https://tasmota.github.io/docs/WS2812B-and-WS2813/
-5. Set Tamsmota Module to Generic, Set GPIO Pin for the WS2812
-6. Add the script below into the script section and be sure to activate
-7. Check that the LEDs are synched in the web interface
-8. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wireless.
+2. Compile and upload the code. Change the pins if you want 
+3. Connect to Board's Wifi "FriendLight-XXX"
+4. Add Wifi, MQTT Server, User, Password, FriendCode (EmilyTricia in above code)
+   A. FriendCode is the MQTT Topic that sync's the lights
+5. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wireless.
+```
+Operation:
+```
+Touch to toggle between off/on for your's and your friends's light
+When it turns on, it will select a random color.
 ```
 
 
