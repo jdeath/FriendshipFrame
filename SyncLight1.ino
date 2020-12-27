@@ -1,4 +1,4 @@
-// syncenlight version by tueftla, based on the Netzbasteln version
+// syncenlight version based on tueftla, based on the Netzbasteln version
 
 #include <FS.h>                   // File system, this needs to be first.
 #include <ESP8266WiFi.h>          // ESP8266 Core WiFi Library
@@ -14,17 +14,19 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 
+#include <Espalexa.h>             // Alexa Support. https://github.com/Aircoookie/Espalexa
+
 //---------------------------------------------------------
 // Pins and configuration
 #define SEND_PIN 4
 #define RECEIVE_PIN 5
-#define SENSOR_THRESHOLD 250
+#define SENSOR_THRESHOLD 250 // Tweeak this based on your sensor.
 #define PIXEL_PIN 2 // D4
 #define PIXEL_COUNT 8
-#define LOOP_PERIOD 1000 // Time in milliseconds for each loop
+#define LOOP_PERIOD 100 // Time in milliseconds for each loop (how long need to hold touch sensor)
 
 // Defaults
-char mqttServer[40] = "192.168.1.14";
+char mqttServer[40] = "192.168.1.XX";
 char mqttPort[40] = "1883";
 char mqttUser[40] = "user";
 char mqttPassword[40] = "password";
@@ -32,12 +34,18 @@ char friendCode[40] = "EmilyTricia";
 
 bool lastSensorState = false;
 
+boolean connectWifi();
+boolean wifiConnected = false;
+
 //---------------------------------------------------------
 bool shouldSaveConfig = false;
 void save_config_callback () {
   Serial.println("Should save config");
   shouldSaveConfig = true;
 }
+
+void colorLightChanged(uint8_t bright, uint32_t rgb);
+Espalexa espalexa;
 
 WiFiManager wifiManager;
 WiFiClient wifiClient;
@@ -58,6 +66,11 @@ uint16_t swooshHue = 240; // blue swoosh
 
 String chipId = String(ESP.getChipId(), HEX);
 char chipIdCharArr[7];
+
+String redString = "0";
+String greenString = "0";
+String blueString = "0";
+String header;
 
 void setup() {
   // Initialize debug output
@@ -135,8 +148,10 @@ void setup() {
 
   wifiManager.autoConnect(ssidCharArr);
 
+  
   // We are connected.
   Serial.println("WiFi Connected.");
+  wifiConnected = true;
 
   // Read updated parameters.
   strcpy(mqttServer, customMqttServer.getValue());
@@ -173,6 +188,14 @@ void setup() {
   Serial.println("MQTT client started.");
   
   swooshTicker.detach();
+
+  // start WebServer
+   
+  
+  espalexa.addDevice(ssid, colorLightChanged);
+  espalexa.begin();
+  
+  
 }
 
 
@@ -188,7 +211,10 @@ void loop() {
     //hue = hue + 1;
     //hue = (hue + 1) % 360;
     hue = random(360); // Random Hue
+
+  //  EspalexaDevice* d = espalexa.getDevice(0);
     
+  
     lightsOn = !lightsOn;    // Toggle Light State
     
     Serial.print("value: ");
@@ -197,14 +223,15 @@ void loop() {
     if (!lightsOn){         // Turn off Light
       off_led();
       Serial.print("Turning Off");
+      //d->setColor(hue,0);
     }else{                  // Turn on Light
       Serial.print("Turning On"); 
       update_led();
+      //d->setColor(hue,255);
     }
 
     
     char payload[1];
-
     itoa(hue+361*!lightsOn, payload, 10); // Encode Hue and current light status in MQTT Payload
     mqttClient.publish(friendCode, payload, true); // Send payload to freindCode Topic
    
@@ -238,7 +265,11 @@ void loop() {
   Serial.print("Processing time in loop: ");
   Serial.print(millis() - startTime);
   Serial.print("\n");
-  
+
+  espalexa.loop();
+
+ 
+   
   int delayValue = LOOP_PERIOD - (millis() - startTime);
   if (delayValue > 0) {
     delay(delayValue);
@@ -311,6 +342,17 @@ void mqtt_reconnect() {
 
 void update_led() {
   uint32_t color = hsv_to_rgb(hue, 255, 255);
+
+    // Update Alexa
+    int r = (color >> 16) & 0xFF;
+    int g = (color >>  8) & 0xFF;
+    int b = color & 0xFF;
+    
+    EspalexaDevice* d = espalexa.getDevice(0);
+    d->setColor(r,g,b);
+    d->setPercent(100);
+
+  // Update LEDs
   for (uint16_t i=0; i < PIXEL_COUNT; i++) {
     leds.setPixelColor(i, color);
   }
@@ -318,7 +360,12 @@ void update_led() {
 }
 
 void off_led() {
-  
+
+  // Update Alexa
+  EspalexaDevice* d = espalexa.getDevice(0);
+  d->setPercent(0);
+
+  // Update LEDs
   for (uint16_t i=0; i < PIXEL_COUNT; i++) {
     leds.setPixelColor(i, 0);
   }
@@ -382,6 +429,38 @@ uint32_t hsv_to_rgb(unsigned int hue, unsigned int sat, unsigned int val) {
     pgm_read_byte(&gamma8[r]),
     pgm_read_byte(&gamma8[g]),
     pgm_read_byte(&gamma8[b]));
+}
+
+
+//the color device callback function has two parameters
+void colorLightChanged(uint8_t bright, uint32_t rgb) {
+
+  //EspalexaDevice* d = espalexa.getDevice(0);
+  //uint32_t myrgb = d->getRGB();
+  //uint8_t myb = d->getPercent();
+
+  // Update LEDs  
+  for (uint16_t i=0; i < PIXEL_COUNT; i++) {
+    leds.setPixelColor(i, rgb);
+  }
+  leds.setBrightness(brightness);
+  leds.show();  
+
+  // Update Internal Color State
+  // Hue Saturation goes from 0 to 65535
+  EspalexaDevice* d = espalexa.getDevice(0);
+  uint16_t alexaHue = d->getHue();
+  hue = alexaHue * 360.0 / 65535.0 ;
+  if(bright == 0)
+    lightsOn = false;
+  else
+    lightsOn = true;  
+
+  // Update MQTT state
+  char payload[1];
+  itoa(hue+361*!lightsOn, payload, 10); // Encode Hue and current light status in MQTT Payload
+  mqttClient.publish(friendCode, payload, true); // Send payload to freindCode Topic
+    
 }
 
 
