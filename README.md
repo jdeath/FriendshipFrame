@@ -2,7 +2,7 @@
 
 Work in Progress
 
-This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features. Based on this instructable: https://www.instructables.com/Color-Synchronized-Touch-Lamps/
+This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features, such as Alexa support. Based on this instructable: https://www.instructables.com/Color-Synchronized-Touch-Lamps/
 
 
 ```
@@ -51,6 +51,7 @@ Operation:
 ```
 Touch to toggle between off/on for your's and your friends's light
 When it turns on, it will select a random color.
+Alexa will turn it off/on and set the color.
 ```
 
 
