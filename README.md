@@ -33,12 +33,13 @@ MQTT Server - Must be on an external network.
   B. In Preferences->Additional Board Manager URLS-> Add: http://arduino.esp8266.com/stable/package_esp8266com_index.json
   C. Tools->Board->Board Manager->Esp8266 Version 2.5.2 (later did not work for me)
   D. Tools->Board->Esp8266 Version 2.5.2->Generic Esp8266
-  D. Install the Libraries (version is imporant). Sketch->Include Library->Manage Libraries
+  E. Install the Libraries (version is imporant). Sketch->Include Library->Manage Libraries
     Adafruit NeoPixel 1.7.0 (later could work)
     ArduinoJson 5.13.5
     CapacativeSensor 0.5.1 (later could work)
     PubSubClient 2.8.0 (later could work)
     WifiManager 0.11.0
+   F. Add ESPAlexa Manually https://github.com/Aircoookie/Espalexa/ (used version 2.5.0)
 2. Compile and upload the code. Change the pins if you want 
 3. Connect to Board's Wifi "FriendLight-XXX"
 4. Add Wifi, MQTT Server, User, Password, FriendCode (EmilyTricia in above code)
