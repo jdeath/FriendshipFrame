@@ -26,8 +26,8 @@
 // Defaults
 char mqttServer[40] = "192.168.1.14";
 char mqttPort[40] = "1883";
-char mqttUser[40] = "mqqt";
-char mqttPassword[40] = "hello";
+char mqttUser[40] = "user";
+char mqttPassword[40] = "password";
 char friendCode[40] = "EmilyTricia";
 
 bool lastSensorState = false;
