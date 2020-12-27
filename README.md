@@ -2,7 +2,7 @@
 
 Work in Progress
 
-This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features
+This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features. Based on this instructable: https://www.instructables.com/Color-Synchronized-Touch-Lamps/
 
 
 ```
