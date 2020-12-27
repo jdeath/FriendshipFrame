@@ -24,7 +24,6 @@ SyncLight Code Linked Below
 MQTT Server - Must be on an external network. 
   I used a https://mosquitto.org/ in a docker.
   Could work with free cloud MQTT server (like https://www.maqiatto.com/), but I haven't tried
-```
 
 0. Setup MQTT server, using authentication. 
   Such as: https://blog.feabhas.com/2020/02/running-the-eclipse-mosquitto-mqtt-broker-in-a-docker-container/ and
@@ -46,6 +45,7 @@ MQTT Server - Must be on an external network.
    A. FriendCode is the MQTT Topic that sync's the lights
 5. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wireless.
 ```
+
 Operation:
 ```
 Touch to toggle between off/on for your's and your friends's light
