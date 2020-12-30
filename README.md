@@ -14,7 +14,8 @@ WS2812 LEDs - A couple bucks each. I have used either an 8 LED ring or 8 LEDs cu
 Touch Switch - Tin Foil and Resister
 
 For the code in the repository (can easily be changed if desired):
-Resister is between PIN 4 and Pin 5 (DO and D5 on board)
+Resister is between PIN 4 and Pin 5 (D1 and D2 on board)
+Wire to foil between Pin 5 and resister
 WS2812 is on Pin 2 (D4 on board)
 Of course, to Ground and 5V too.
 
