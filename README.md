@@ -12,9 +12,10 @@ Wemos D1 Mini - You can get for about $3 each on Aliexpress or Amazon. Real or k
 WS2812 LEDs - A couple bucks each. I am using an 8 LED ring for each. 
 Touch Switch - Tin Foil and Resister
 
-For the code in the repository:
+For the code in the repository (can easily be changed if desired):
 Resister is between PIN 4 and Pin 5 (DO and D5 on board)
-WS2812 is on Pin 2 (D4 on board) Of course, to Ground and 5V too.
+WS2812 is on Pin 2 (D4 on board)
+Of course, to Ground and 5V too.
 
 ```
 ![alt text](https://github.com/jdeath/TasmotaFriendshipLamp/raw/main/BluePrint.png)
