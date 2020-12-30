@@ -17,7 +17,7 @@ Resister is between PIN 4 and Pin 5 (DO and D5 on board)
 WS2812 is on Pin 2 (D4 on board) Of course, to Ground and 5V too.
 
 ```
-![alt text](https://github.com/jdeath/TasmotaFriendshipLamp/blob/master/BluePrint.png?raw=true)
+![alt text](https://github.com/jdeath/TasmotaFriendshipLamp/raw/main/BluePrint.png)
 
 Software
 ```
