@@ -9,7 +9,8 @@ This documents how to make a friendship lamp from inexpensive parts. Inspired by
 ```
 Per Lamp:
 Wemos D1 Mini - You can get for about $3 each on Aliexpress or Amazon. Real or knockoffs work. Can use almost any ESP board.
-WS2812 LEDs - A couple bucks each. I am using an 8 LED ring for each. 
+WS2812 LEDs - A couple bucks each. I have used either an 8 LED ring or 8 LEDs cut from a strip for each. Should work with 12 too
+  
 Touch Switch - Tin Foil and Resister
 
 For the code in the repository (can easily be changed if desired):
