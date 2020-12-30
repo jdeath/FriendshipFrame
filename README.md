@@ -5,6 +5,7 @@ Work in Progress
 This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features, such as Alexa support. Based on this instructable: https://www.instructables.com/Color-Synchronized-Touch-Lamps/
 
 
+
 ```
 Per Lamp:
 Wemos D1 Mini - You can get for about $3 each on Aliexpress or Amazon. Real or knockoffs work. Can use almost any ESP board.
@@ -16,6 +17,7 @@ Resister is between PIN 4 and Pin 5 (DO and D5 on board)
 WS2812 is on Pin 2 (D4 on board) Of course, to Ground and 5V too.
 
 ```
+![alt text](https://github.com/jdeath/TasmotaFriendshipLamp/blob/master/BluePrint.png?raw=true)
 
 Software
 ```
