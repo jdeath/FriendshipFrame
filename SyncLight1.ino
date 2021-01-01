@@ -11,31 +11,29 @@
 #include <Ticker.h>
 #include <CapacitiveSensor.h>
 
-#include <ESP8266HTTPClient.h>
-#include <ESP8266httpUpdate.h>
+//#include <ESP8266HTTPClient.h>
+//#include <ESP8266httpUpdate.h>
 
 #include <Espalexa.h>             // Alexa Support. https://github.com/Aircoookie/Espalexa
 
 //---------------------------------------------------------
 // Pins and configuration
-#define SEND_PIN 4
-#define RECEIVE_PIN 5
-#define SENSOR_THRESHOLD 250 // Tweeak this based on your sensor.
+#define SEND_PIN 4 // D2
+#define RECEIVE_PIN 5 // D1
+#define SENSOR_THRESHOLD 50 // Tweeak this based on your sensor.
 #define PIXEL_PIN 2 // D4
-#define PIXEL_COUNT 8
-#define LOOP_PERIOD 100 // Time in milliseconds for each loop (how long need to hold touch sensor)
+#define PIXEL_COUNT 8 // Number of LEDs
+#define LOOP_PERIOD 250 // Time in milliseconds for each loop (how long need to hold touch sensor)
 
 // Defaults
-char mqttServer[40] = "192.168.1.XX";
+char mqttServer[40] = "mqtt.server.com";
 char mqttPort[40] = "1883";
-char mqttUser[40] = "user";
-char mqttPassword[40] = "password";
-char friendCode[40] = "EmilyTricia";
+char mqttUser[40] = "yourUser";
+char mqttPassword[40] = "yourPassword";
+char friendCode[40] = "AliceBob";
 
 bool lastSensorState = false;
 
-boolean connectWifi();
-boolean wifiConnected = false;
 
 //---------------------------------------------------------
 bool shouldSaveConfig = false;
@@ -48,9 +46,12 @@ void colorLightChanged(uint8_t bright, uint32_t rgb);
 Espalexa espalexa;
 
 WiFiManager wifiManager;
-WiFiClient wifiClient;
+//WiFiClientSecure wifiClient; // Use WiFiClient if do not want to use secure MQTT
+WiFiClient wifiClient; // Use WiFiClientSecure if want to use secure MQTT
+
 PubSubClient mqttClient(wifiClient);
 CapacitiveSensor sensor = CapacitiveSensor(SEND_PIN, RECEIVE_PIN);
+
 Adafruit_NeoPixel leds = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800); // NEO_RGBW for Wemos Mini LED Modules, NEO_GRB for most Stripes 
 
 uint16_t hue = 0; // 0-359
@@ -67,14 +68,11 @@ uint16_t swooshHue = 240; // blue swoosh
 String chipId = String(ESP.getChipId(), HEX);
 char chipIdCharArr[7];
 
-String redString = "0";
-String greenString = "0";
-String blueString = "0";
-String header;
-
 void setup() {
   // Initialize debug output
   Serial.begin(9600);
+
+  //wifiClient.setInsecure();  // Do not force certificate authenication, uncomment if use WiFiClientSecure
   
   // Initialize LEDs and swoosh animation (played during startup and configuration)
   leds.begin();
@@ -90,7 +88,7 @@ void setup() {
   char ssidCharArr[ssidCharArrSize];
   ssid.toCharArray(ssidCharArr, ssidCharArrSize);
 
-  Serial.println("Hi!");
+  //Serial.println("Hi!");
   Serial.print("Chip ID: ");
   Serial.println(chipId);
 
@@ -148,11 +146,9 @@ void setup() {
 
   wifiManager.autoConnect(ssidCharArr);
 
-  
   // We are connected.
   Serial.println("WiFi Connected.");
-  wifiConnected = true;
-
+  
   // Read updated parameters.
   strcpy(mqttServer, customMqttServer.getValue());
   strcpy(mqttPort, customMqttPort.getValue());
@@ -179,12 +175,15 @@ void setup() {
     configFile.close();
   }
   // End save.
-
+  
   // Start MQTT client.
   String s = String((char*)mqttPort);
   unsigned int p = s.toInt();
+
+ 
   mqttClient.setServer(mqttServer, p);
   mqttClient.setCallback(mqtt_callback);
+  mqttClient.setKeepAlive(600); // Disable Keepalive to stop disconnects
   Serial.println("MQTT client started.");
   
   swooshTicker.detach();
@@ -194,40 +193,51 @@ void setup() {
   
   espalexa.addDevice(ssid, colorLightChanged);
   espalexa.begin();
-  
-  
+
+  // Sensor was not autocalibrating and getting stuck high
+  sensor.set_CS_AutocaL_Millis(2000);  
 }
 
 
 void loop() {
   long startTime = millis();
+
+  // If not connected anymore try to reconnect
+  if (!mqttClient.connected()) {
+    swooshTicker.attach_ms(10, update_swoosh);
+    mqtt_reconnect();
+  }
+
+  // Necessary to keep up MQTT connection
   
+
   // Read capacitive sensor, if touched change color
   long sensorValue;
   sensorValue = sensor.capacitiveSensor(80);
-
+  
+  
   // Register button press if sensor value is above threshold
+  //Serial.print("sensor: ");
+  //Serial.println(sensorValue);
   if (sensorValue > SENSOR_THRESHOLD) {
     //hue = hue + 1;
     //hue = (hue + 1) % 360;
     hue = random(360); // Random Hue
-
+    
   //  EspalexaDevice* d = espalexa.getDevice(0);
     
   
     lightsOn = !lightsOn;    // Toggle Light State
     
-    Serial.print("value: ");
-    Serial.print(lightsOn);
+    //Serial.print("value: ");
+    //Serial.print(lightsOn);
     
     if (!lightsOn){         // Turn off Light
       off_led();
-      Serial.print("Turning Off");
-      //d->setColor(hue,0);
+  //    Serial.print("Turning Off");
     }else{                  // Turn on Light
-      Serial.print("Turning On"); 
+      //Serial.print("Turning On"); 
       update_led();
-      //d->setColor(hue,255);
     }
 
     
@@ -235,8 +245,8 @@ void loop() {
     itoa(hue+361*!lightsOn, payload, 10); // Encode Hue and current light status in MQTT Payload
     mqttClient.publish(friendCode, payload, true); // Send payload to freindCode Topic
    
-    Serial.print("New color: ");
-    Serial.println(hue);
+    //Serial.print("New color: ");
+    //Serial.println(hue);
   }
 
   // For determining first loop after touch is released
@@ -256,15 +266,15 @@ void loop() {
   mqttClient.loop();
   
   // Debug output
-  Serial.print("Sensor value: ");
-  Serial.print(sensorValue);
+  //Serial.print("Sensor value: ");
+  //Serial.print(sensorValue);
 
-  Serial.print("hue: ");
-  Serial.print(hue);
-  Serial.print("\t");
-  Serial.print("Processing time in loop: ");
-  Serial.print(millis() - startTime);
-  Serial.print("\n");
+  //Serial.print("hue: ");
+  //Serial.print(hue);
+  //Serial.print("\t");
+  //Serial.print("Processing time in loop: ");
+  //Serial.print(millis() - startTime);
+  //Serial.print("\n");
 
   espalexa.loop();
 
@@ -278,27 +288,30 @@ void loop() {
 
 
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Received [");
-  Serial.print(topic);
-  Serial.print("]: ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.print(" (length ");
-  Serial.print(length);
-  Serial.print(")");
-  Serial.println();
-
+  //Serial.print("Received [");
+  //Serial.print(topic);
+  //Serial.print("]: ");
+  //for (int i = 0; i < length; i++) {
+  //  Serial.print((char)payload[i]);
+  //}
+  //Serial.print(" (length ");
+  //Serial.print(length);
+  //Serial.print(")");
+  //Serial.println();
+ 
+ 
   // Update color of LEDs
   if (length <= 3) {
     payload[length] = '\0';
     String s = String((char*)payload);
+    //Serial.println(s);
+    
     unsigned int newHue = s.toInt();
 
-    Serial.print("new hue: ");
-    Serial.print(newHue);
-     Serial.print(" old hue: ");
-    Serial.print(hue);
+    //Serial.print("new hue: ");
+    //Serial.print(newHue);
+     //Serial.print(" old hue: ");
+    //Serial.print(hue);
     
     // if same state as before, do not change
     if (newHue == hue)
@@ -314,7 +327,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 
     // if color is above 360, lights should be off
     if (newHue > 360) {
-      Serial.print("I should turn off");
+      //Serial.print("I should turn off");
       off_led();         // Turn off the lights
       lightsOn = false;  // turn off light state
     }
@@ -341,7 +354,7 @@ void mqtt_reconnect() {
 }
 
 void update_led() {
-  uint32_t color = hsv_to_rgb(hue, 255, 255);
+  uint32_t color = hsv_to_rgb(hue, 255, brightness);
 
     // Update Alexa
     int r = (color >> 16) & 0xFF;
