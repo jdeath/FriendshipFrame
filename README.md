@@ -47,7 +47,7 @@ MQTT Server - Must be on an external network.
    F. Add ESPAlexa Manually https://github.com/Aircoookie/Espalexa/ (used version 2.5.0)
 2. Compile and upload the code. Change the pins if you want 
 3. Connect to Board's Wifi "FriendLight-XXX"
-4. Add Wifi, MQTT Server, User, Password, FriendCode (EmilyTricia in above code)
+4. Add Wifi, MQTT Server, User, Password, FriendCode (AliceBob in above code)
    A. FriendCode is the MQTT Topic that sync's the lights
 5. Put in 3d printed case, picture frame, etc and send to friend. Best if you pre-setup their wireless.
 ```
