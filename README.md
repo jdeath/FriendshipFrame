@@ -4,7 +4,7 @@ Work in Progress
 
 This documents how to make a friendship lamp from inexpensive parts. Inspired by UncommonGoods which sell for $175 a set.  These can be made for $10 each and have more features, such as Alexa support. Based on this instructable: https://www.instructables.com/Color-Synchronized-Touch-Lamps/
 
-
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Oidymz5dRaY/0.jpg)](https://www.youtube.com/watch?v=Oidymz5dRaY)
 
 ```
 Per Lamp:
