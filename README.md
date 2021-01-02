@@ -1,4 +1,4 @@
-# TasmotaFriendshipLamp
+# FriendshipFrame
 
 Work in Progress
 
